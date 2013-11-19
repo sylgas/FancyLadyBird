@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FancyLadyBird</string>
+    <string name="connect_button_msg">Podłącz do urządzenia...</string>
+    <string name="find_devices_msg">Wyszukiwanie urządzeń...</string>
+    <string name="done_finding_devices_msg">Zakończono wyszukiwanie urządzeń</string>
+    <string name="edit_message">Wpisz imię...</string>
+    <string name="welcome_msg">Witaj !</string>
 </resources>
