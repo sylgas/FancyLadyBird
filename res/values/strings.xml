@@ -6,4 +6,6 @@
     <string name="done_finding_devices_msg">Zakończono wyszukiwanie urządzeń</string>
     <string name="edit_message">Wpisz imię...</string>
     <string name="welcome_msg">Witaj !</string>
+    <string name="return_button">Poprzednia</string>
+    <string name="exit_button">"Wyjdź"</string>
 </resources>

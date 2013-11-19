@@ -17,58 +17,46 @@ import java.util.UUID;
  * To change this template use File | Settings | File Templates.
  */
 public class ConnectingThread implements Runnable {
-    // Bluetooth Stuff, tworzone sa obiekty odpowiedzialne za komunikacje
-    private BluetoothAdapter btadapter;
-    private BluetoothSocket btsocket;
-    private OutputStream outstream;
-    public Handler handler;
-
-    String address;
-    boolean cstatus;
-
     //zadany UUID
     private static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-
-    public ConnectingThread(String MACaddr, BluetoothAdapter btadapter ,OutputStream outstream, Handler handler){
-        this.address = MACaddr;
-        this.cstatus = true;
-        this.btadapter=btadapter;
-        this.outstream=outstream;
-        this.handler= handler;
+    
+    public ConnectingThread(){
+        BluetoothManager.getManager().setConnectStatus(Boolean.TRUE);
     }
 
     @Override
     public void run(){
         try{
-            BluetoothDevice btdevice = btadapter.getRemoteDevice(address);
+            BluetoothDevice bluetoothDevice = BluetoothManager.getManager().getBluetoothAdapter().getRemoteDevice(BluetoothManager.getManager().getMACaddress());
             try{
-                btsocket = btdevice.createRfcommSocketToServiceRecord(SPP_UUID);
-
+                BluetoothManager.getManager().setBluetoothSocket(bluetoothDevice.createRfcommSocketToServiceRecord(SPP_UUID));
             } catch(IOException e){
-                this.cstatus = false;
+                BluetoothManager.getManager().setConnectStatus(Boolean.FALSE);
             }
         } catch (IllegalArgumentException e){
-            this.cstatus = false;
+            BluetoothManager.getManager().setConnectStatus(Boolean.FALSE);
         }
-        btadapter.cancelDiscovery();
+
+        BluetoothManager.getManager().getBluetoothAdapter().cancelDiscovery();
+
         try {
-            btsocket.connect();
+            BluetoothManager.getManager().getBluetoothSocket().connect();
         }catch (IOException e1){
             try {
-                btsocket.close();
+                BluetoothManager.getManager().getBluetoothSocket().close();
             } catch (IOException e2){
             }
         }
-        //data stream do rozmowy
+
         try {
-            outstream = btsocket.getOutputStream();
+            BluetoothManager.getManager().setOutputStream( BluetoothManager.getManager().getBluetoothSocket().getOutputStream());
         } catch (IOException e2){
-            this.cstatus = false;
+            BluetoothManager.getManager().setConnectStatus(Boolean.FALSE);
         }
-        if (this.cstatus){
-            handler.sendEmptyMessage(1);
+        if (BluetoothManager.getManager().isConnectStatus()){
+            BluetoothManager.getManager().getHandler().sendEmptyMessage(1);
         } else {
-            handler.sendEmptyMessage(0);
+            BluetoothManager.getManager().getHandler().sendEmptyMessage(0);
         }
     }
 

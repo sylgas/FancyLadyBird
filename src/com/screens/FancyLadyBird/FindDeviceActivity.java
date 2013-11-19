@@ -21,40 +21,36 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public class FindDeviceActivity extends Activity {
-    private BluetoothAdapter btadapter = null;
     private static final String WELCOME_MESSAGE= "Witaj !";
     ArrayAdapter<String> devices;
 
     //Parametry potrzebne przy komunikacji
     protected static final String EXTRA_DEVICE_ADDRESS = "device_address";
 
-
-
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.find_devices);
 
-        TextView textView= (TextView) this.findViewById(R.id.textView1);
+        TextView textView= (TextView) this.findViewById(R.id.textViewWelcomeMessage);
         if (getIntent().getStringExtra(MainActivity.USER_NAME) != null) {
             textView.setText(WELCOME_MESSAGE.replace(" ", " " + getIntent().getStringExtra(MainActivity.USER_NAME)));
         }
 
         ProgressBar progressBar= (ProgressBar) this.findViewById(R.id.progressBar);
-        progressBar.setIndeterminate(Boolean.TRUE);
+        progressBar.setVisibility(View.VISIBLE);
+
 
         //getUserBluetooth();
-
-
-
-
         //listy urzadzen
          devices = new ArrayAdapter<String>(this, R.layout.devices_list);
+         findDevices();
 
         //stworzenie listview dla urzadzen
-         ListView listView = (ListView) this.findViewById(R.id.listView1);
-         listView.setAdapter(devices);
-         listView.setOnItemClickListener(clicklistener);
+         ListView listView = (ListView) this.findViewById(R.id.listViewDevices);
+         //listView.setAdapter(devices);
+         //listView.setOnItemClickListener(clicklistener);
+
+
 
         //nowe
 //        ListView nlv = (ListView) this.findViewById(R.id.listView2);
@@ -63,38 +59,38 @@ public class FindDeviceActivity extends Activity {
 //
 
 // gdy urzadzenie zostanie odkryte, rejestracja
-         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-         this.registerReceiver(btReceiver, filter);
+        /* IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+         this.registerReceiver(bluetoothReceiver, filter);
 
        //koniec odkrywania urzadzen
         filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-       this.registerReceiver(btReceiver, filter);
+       this.registerReceiver(bluetoothReceiver, filter);
 
-        TextView textView2= (TextView) this.findViewById(R.id.textView);
+        TextView textView2= (TextView) this.findViewById(R.id.textViewFindingDevices);
         textView2.setText(R.string.done_finding_devices_msg);
-        this.setProgressBarIndeterminate(true);
+
+        progressBar.setVisibility(View.GONE);*/
 
 
-
-        btadapter = BluetoothAdapter.getDefaultAdapter();
+       /* BluetoothManager.getManager().getBluetoothAdapter() = BluetoothAdapter.getDefaultAdapter();
 
         //pobranie aktualnie powiazanych
-        Set<BluetoothDevice> paireddevicesset = btadapter.getBondedDevices();
+        Set<BluetoothDevice> paireddevicesset = BluetoothManager.getManager().getBluetoothAdapter().getBondedDevices();
         if (paireddevicesset.size() > 0){
             for (BluetoothDevice device : paireddevicesset){
                 this.devices.add(device.getName() + "\n" + device.getAddress());
             }
         } else {
             this.devices.add("no devices");
-        }
+        }*//*
 
-
+*/
     }
 
     //reakcja na klikniecie danego urzadzenia
     AdapterView.OnItemClickListener clicklistener = new AdapterView.OnItemClickListener(){
         public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3){
-            btadapter.cancelDiscovery();
+            BluetoothManager.getManager().getBluetoothAdapter().cancelDiscovery();
             //get mac
             String info = ((TextView) v).getText().toString();
             try {
@@ -115,7 +111,7 @@ public class FindDeviceActivity extends Activity {
     };
 
     // BroadcastReceiver nasluchujacy na odkrywane urzadzenia
-    BroadcastReceiver btReceiver = new BroadcastReceiver(){
+    BroadcastReceiver bluetoothReceiver = new BroadcastReceiver(){
         @Override
         public void onReceive(Context context, Intent intent){
             String action = intent.getAction();
@@ -140,26 +136,25 @@ public class FindDeviceActivity extends Activity {
     };
 
     //obsluga klikniecia przycisku scan - wyszukiwanie nowych urzadze� w poblizu
-    public void onScanClick(View view){
-        btadapter = BluetoothAdapter.getDefaultAdapter();
+    public void findDevices(){
+        BluetoothManager.getManager().setBluetoothAdapter( BluetoothAdapter.getDefaultAdapter());
 
-        this.setProgressBarIndeterminate(true);
-        this.setTitle("scanning");
-
-        if(btadapter == null){
-            //nieobslugiwany btooth
-            Toast.makeText(this, "not avaible", Toast.LENGTH_LONG).show();
+        if(BluetoothManager.getManager().getBluetoothAdapter() == null){
+            Toast.makeText(this, "Bluetooth nie jest obslugiwany", Toast.LENGTH_LONG).show();
             this.finish();
             return;
         }
 
         //wymaganie w��czenia bt jezeli nie jest
-        if(!btadapter.isEnabled()){
+        if(!BluetoothManager.getManager().getBluetoothAdapter().isEnabled()){
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, MainActivity.ENABLE_BLUETOOTH_REQ);
         }
 
-        btadapter.startDiscovery(); //start szukania
-        //this.finish();
+        BluetoothManager.getManager().getBluetoothAdapter().startDiscovery(); //start szukania
+    }
+
+    public void finishActivity( View view) {
+        finish();
     }
 }

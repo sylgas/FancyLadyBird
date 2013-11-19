@@ -5,36 +5,68 @@
               android:layout_height="match_parent"
               android:orientation="horizontal" android:background="#ffffff">
 
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="56dp"
-            android:text="@string/connect_button_msg"
-            android:onClick="findDevices"
-            android:layout_row="8" android:layout_column="1"
-            android:id="@+id/button"
-            android:layout_centerHorizontal="true" android:layout_alignParentBottom="true"/>
     <TextView
             android:layout_width="205dp"
-            android:layout_height="40dp"
+            android:layout_height="32dp"
             android:text="@string/app_name"
-            android:textSize="20dp"
             android:id="@+id/textView"
-            android:layout_alignRight="@+id/button" android:layout_alignParentTop="true"
-            android:layout_marginTop="17dp" android:layout_alignLeft="@+id/button" android:textColor="#ff432b"
-            android:textIsSelectable="true" android:textStyle="bold|italic" android:gravity="center"/>
+            android:textColor="#ff432b"
+            android:textIsSelectable="true" android:textStyle="bold|italic" android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/title_size"
+            android:layout_marginTop="20dp"/>
+
     <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/image_size"
+            android:layout_height="@dimen/image_size"
             android:id="@+id/imageView"
             android:src="@drawable/bierdonka" android:layout_centerHorizontal="true"
             android:layout_alignParentTop="true" android:layout_marginTop="53dp"/>
-    <EditText android:id="@+id/edit_message"
-              android:layout_width="wrap_content"
-            android:hint="@string/edit_message"
-            android:layout_weight="1"
+    <GridLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true" android:layout_above="@+id/button"
-            android:background="#ffffff"/>
+            android:id="@+id/gridLayout"
+            android:layout_centerHorizontal="true" android:layout_alignParentBottom="true">
+        <Button
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/menu_button_height"
+                android:text="@string/exit_button"
+                android:layout_row="3" android:layout_column="1"
+                android:id="@+id/button1"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_gravity="center"
+                android:layout_marginBottom="30dp"
+                android:onClick="finishActivity"
+                android:textSize="@dimen/menu_button_text_size"
+                android:textColor="#010101"
+                />
+
+        <EditText android:id="@+id/userName"
+                  android:layout_width="wrap_content"
+                android:hint="@string/edit_message"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="#eaeaea"
+                android:layout_row="0" android:layout_column="1"
+                android:layout_marginBottom="30dp"
+                android:gravity="fill_horizontal|center_horizontal"
+                android:layout_gravity="center"
+                android:textColor="#010101"
+                android:textSize="@dimen/user_name_text"
+                />
+        <Button
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/menu_button_height"
+                android:text="@string/connect_button_msg"
+                android:onClick="findDevices"
+                android:layout_row="2" android:layout_column="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:id="@+id/button"
+                android:layout_gravity="center"
+                android:textSize="@dimen/menu_button_text_size"
+                android:textColor="#010101"
+                />
+    </GridLayout>
 
 
 </RelativeLayout>
