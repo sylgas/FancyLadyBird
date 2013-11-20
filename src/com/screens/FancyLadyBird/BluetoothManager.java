@@ -1,9 +1,11 @@
 package com.screens.FancyLadyBird;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.UUID;
 
@@ -15,6 +17,9 @@ import java.util.UUID;
  * To change this template use File | Settings | File Templates.
  */
 public class BluetoothManager {
+    private static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
+
     private BluetoothAdapter bluetoothAdapter = null;
     private BluetoothSocket bluetoothSocket= null;
     private final static BluetoothManager instance= new BluetoothManager();
@@ -33,6 +38,7 @@ public class BluetoothManager {
 
     private String MACaddress;
     private boolean connectStatus;
+    private boolean handlingMsg= false;
 
     public void setBluetoothAdapter(BluetoothAdapter bluetoothAdapter) {
         this.bluetoothAdapter = bluetoothAdapter;
@@ -82,5 +88,48 @@ public class BluetoothManager {
         return connectStatus;
     }
 
+    public void connect() {
+        BluetoothManager.getManager().setConnectStatus(Boolean.TRUE);
+        try{
+            BluetoothDevice bluetoothDevice = BluetoothManager.getManager().getBluetoothAdapter().getRemoteDevice(BluetoothManager.getManager().getMACaddress());
+            try{
+                BluetoothManager.getManager().setBluetoothSocket(bluetoothDevice.createRfcommSocketToServiceRecord(SPP_UUID));
+            } catch(IOException e){
+                BluetoothManager.getManager().setConnectStatus(Boolean.FALSE);
+            }
+        } catch (IllegalArgumentException e){
+            BluetoothManager.getManager().setConnectStatus(Boolean.FALSE);
+        }
 
+        BluetoothManager.getManager().getBluetoothAdapter().cancelDiscovery();
+
+        try {
+            BluetoothManager.getManager().getBluetoothSocket().connect();
+        }catch (IOException e1){
+            BluetoothManager.getManager().setConnectStatus(Boolean.FALSE);
+            try {
+                BluetoothManager.getManager().getBluetoothSocket().close();
+            } catch (IOException e2){
+            }
+        }
+
+        try {
+            BluetoothManager.getManager().setOutputStream( BluetoothManager.getManager().getBluetoothSocket().getOutputStream());
+        } catch (IOException e2){
+            BluetoothManager.getManager().setConnectStatus(Boolean.FALSE);
+        }
+        if (BluetoothManager.getManager().isConnectStatus()){
+            BluetoothManager.getManager().getHandler().sendEmptyMessage(1);
+        } else {
+            BluetoothManager.getManager().getHandler().sendEmptyMessage(0);
+        }
+    }
+
+    public void setHandlingMsg(boolean handlingMsg) {
+        this.handlingMsg = handlingMsg;
+    }
+
+    public boolean isHandlingMsg() {
+        return handlingMsg;
+    }
 }

@@ -11,7 +11,8 @@
             android:layout_height="wrap_content"
             android:text="@string/welcome_msg"
             android:textSize="40dp"
-            android:id="@+id/textViewWelcomeMessage" android:layout_gravity="left|center_vertical"/>
+            android:id="@+id/textViewWelcomeMessage" android:layout_gravity="left|center_vertical"
+            android:textColor="#494949"/>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:orientation="horizontal"
@@ -30,29 +31,32 @@
                 android:id="@+id/progressBar" android:layout_gravity="center_horizontal|top"/>
     </LinearLayout>
 
-    <ListView
-            android:id="@+id/listVie1w1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_weight="2">
 
-    </ListView>
-    <ListView
-            android:id="@+id/listView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@+id/listViewDevices"
-            android:layout_weight="1"
-            android:layout_marginTop="78dp"/>
+
+        <ScrollView
+                android:id="@+id/scrollView1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_weight="2"
+                >
+            <ListView
+                    android:id="@+id/listViewDevices"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    >
+
+            </ListView>
+        </ScrollView>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/return_button"
             android:onClick="finishActivity"
-            android:id="@+id/returnButton" android:layout_gravity="left|center_vertical"/>
+            android:id="@+id/returnButton"
+            android:layout_gravity="left|center_vertical"
+            android:layout_above="@+id/linearLayout2"/>
+
 
 </LinearLayout>
